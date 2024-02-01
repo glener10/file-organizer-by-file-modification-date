@@ -1,0 +1,14 @@
+[package]
+name = "filesOrganizerPerYear"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.19"
+image = "0.23.14"
+
+[profile.dev]
+opt-level = 3
+
+[profile.release]
+opt-level = 3

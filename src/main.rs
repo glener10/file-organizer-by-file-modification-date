@@ -1,3 +1,10 @@
+//TODO: arg to define output directory
+//TODO: arg to define copy ou cut files
+//TODO: Create README file
+//TODO: See how made better error handling in rust
+//TODO: Separate in more folders
+//TODO: Consider whether the file is not hidden
+//TODO: Use Logging system
 use chrono::{DateTime, Datelike, Local};
 use std::env;
 use std::fs;
@@ -6,7 +13,7 @@ use walkdir::WalkDir;
 
 fn main() {
   let args: Vec<String> = env::args().collect();
-
+  
   if args.len() != 3 || args[1] != "-d" {
     println!("Use: cargo run -- -d <directory path>");
     return;
@@ -60,7 +67,6 @@ fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, String> {
   for entry in WalkDir::new(dir_path).follow_links(true) {
     match entry {
       Ok(entry) => {
-        //TODO: Consider whether the file is not hidden
         if entry.file_type().is_file() {
           file_paths.push(entry.path().to_path_buf());
         }

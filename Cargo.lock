@@ -151,6 +151,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07"
 
 [[package]]
+name = "filesOrganizerPerYear"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "image",
+]
+
+[[package]]
 name = "gif"
 version = "0.11.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -297,14 +305,6 @@ name = "once_cell"
 version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
-
-[[package]]
-name = "organizador-de-fotos"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "image",
-]
 
 [[package]]
 name = "png"

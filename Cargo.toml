@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 walkdir = "2"
+chrono = "0.4.19"
 
 [profile.dev]
 opt-level = 3

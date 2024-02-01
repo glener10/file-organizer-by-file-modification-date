@@ -1,6 +1,8 @@
 use std::env;
-use std::path::PathBuf;
+use std::fs;
 use walkdir::WalkDir;
+use chrono::{DateTime, Local, Datelike};
+use std::path::{Path, PathBuf};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -15,10 +17,14 @@ fn main() {
     if let Err(err) = match list_files_in_directory(dir_path) {
         Ok(paths) => {
             for path in paths {
-              //TODO: Take modification date of path file
               //TODO: Create output destination if doenst exists
               //TODO: Save File in the output destination
-                println!("{}", path.display());
+              match get_image_modification_date(&path.to_string_lossy()) {
+                Ok(modification_date) => {
+                  println!("{}       Year: {}", path.display(), modification_date);
+                },
+                Err(err) => eprintln!("Error to obtain modification date: {}", err),
+              }
             }
             Ok(())
         }
@@ -26,6 +32,16 @@ fn main() {
     } {
         println!("{}", err);
     }
+}
+
+fn get_image_modification_date(path: &str) -> Result<i32, std::io::Error> {
+  let path = Path::new(path);
+
+  let modification_date_in_system_time = fs::metadata(path)?.modified()?;
+  let modification_date = DateTime::<Local>::from(modification_date_in_system_time);
+            
+  let year = modification_date.year();
+  Ok(year)
 }
 
 fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, String> {

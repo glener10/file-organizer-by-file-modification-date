@@ -4,23 +4,37 @@ use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-fn obter_data_modificacao_imagem(diretorio: &str) -> Result<SystemTime, std::io::Error> {
-  let path = Path::new(diretorio);
+fn get_image_modification_date(path: &str) -> i32 {
+  let path = Path::new(path);
 
-  let data_modificacao = fs::metadata(path)?.modified()?;
-
-  Ok(data_modificacao)
+  let modification_date_in_systemTime = fs::metadata(path)?.modified()?;
+  let modification_date = DateTime::<Local>::from(modification_date_in_systemTime);
+            
+  let year = modification_date.year()
 }
 
 fn main() {
   let args: Vec<String> = env::args().collect();
 
   if args.len() != 3 || args[1] != "-d" {
-    println!("Uso: cargo run -- -d <caminho_do_diretorio>");
+    println!("Use: cargo run -- -d <path directory>");
     return;
   }
 
   let dir_path = &args[2];
+
+  if let Ok(entries) = fs::read_dir(dir_path) {
+    for entry in entries {
+      let path = entry.path();
+
+      if path.is_file() {
+        println!("File: {}", path);
+      }
+    }
+  }
+}
+
+/* 
 
   if let Ok(entries) = fs::read_dir(dir_path) {
     for entry in entries {
@@ -76,3 +90,4 @@ fn is_hidden(path: &Path) -> bool {
     .and_then(|name| name.to_str())
     .map_or(false, |name| name.starts_with('.'))
 }
+ */

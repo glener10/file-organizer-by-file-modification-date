@@ -11,47 +11,34 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
-fn main() {
-  let args: Vec<String> = env::args().collect();
-  
-  if args.len() != 3 || args[1] != "-d" {
-    println!("Use: cargo run -- -d <directory path>");
-    return;
-  }
+mod errors;
+use errors::AppError;
 
+fn main() -> Result<(), AppError> {
+  let args: Vec<String> = read_args()?;
   let dir_path = &args[2];
 
-  if let Err(err) = match list_files_in_directory(dir_path) {
-    Ok(paths) => {
-      for path in paths {
-        match get_image_modification_date(&path.to_string_lossy()) {
-          Ok(modification_year) => {
-            let output_dir = PathBuf::from("output").join(format!("{}", modification_year));
-            if let Err(err) = fs::create_dir_all(&output_dir) {
-              println!("Error in create output directory: {}", err);
-              return;
-            }
+  let paths = list_files_in_directory(dir_path)?;
+  for path in paths {
+    let modification_year = get_file_modification_date(&path.to_string_lossy())?;
 
-            let output_file = output_dir.join(path.file_name().unwrap());
+    let output_dir = PathBuf::from("output").join(format!("{}", modification_year));
+    fs::create_dir_all(&output_dir)?;
 
-            if let Err(err) = fs::copy(&path, &output_file) {
-              println!("Error to copy file: {}", err);
-            } else {
-              println!("File copied: {:?}", output_file);
-            }
-          }
-          Err(err) => eprintln!("Error to obtain modification date: {}", err),
-        }
-      }
-      Ok(())
-    }
-    Err(err) => Err(format!("Error: {}", err)),
-  } {
-    println!("{}", err);
+    let output_file = output_dir.join(path.file_name().ok_or_else(|| {
+      AppError::IOError(std::io::Error::new(
+        std::io::ErrorKind::Other,
+        "No file name",
+      ))
+    })?);
+
+    fs::copy(&path, &output_file)?;
+    println!("File copied: {:?}", output_file);
   }
+  Ok(())
 }
 
-fn get_image_modification_date(path: &str) -> Result<i32, std::io::Error> {
+fn get_file_modification_date(path: &str) -> Result<i32, AppError> {
   let path = Path::new(path);
 
   let modification_date_in_system_time = fs::metadata(path)?.modified()?;
@@ -61,7 +48,7 @@ fn get_image_modification_date(path: &str) -> Result<i32, std::io::Error> {
   Ok(year)
 }
 
-fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, String> {
+fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, AppError> {
   let mut file_paths = Vec::new();
 
   for entry in WalkDir::new(dir_path).follow_links(true) {
@@ -72,10 +59,24 @@ fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, String> {
         }
       }
       Err(err) => {
-        return Err(format!("Error to list files: {}", err));
+        let error_message = format!("An error occurred while reading the directory: {}", err);
+        return Err(AppError::ReadDirectoryError(error_message));
       }
     }
   }
 
   Ok(file_paths)
+}
+
+fn read_args() -> Result<Vec<String>, AppError> {
+  let args: Vec<String> = env::args().collect();
+  if args.len() != 3 || args[1] != "-d" {
+    print_helping_informations();
+    return Err(AppError::ArgsError("Invalid arguments".to_string()));
+  }
+  Ok(args)
+}
+
+fn print_helping_informations() {
+  println!("Use: cargo run -- -d <directory path>");
 }

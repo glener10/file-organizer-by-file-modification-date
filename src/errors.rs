@@ -2,7 +2,6 @@ use std::io;
 
 #[derive(Debug)]
 pub enum AppError {
-  ArgsError(String),
   ReadDirectoryError(String),
   IOError(io::Error),
 }

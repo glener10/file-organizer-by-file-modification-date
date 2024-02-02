@@ -1,9 +1,11 @@
-//TODO: File with same name?
 //TODO: Consider whether the file is not hidden
 //TODO: Use Logging system
 //TODO: Loggin of time listing directory
 use chrono::{DateTime, Datelike, Local};
 use clap::{App, Arg, ArgMatches};
+use rand::Rng;
+use std::collections::HashSet;
+use std::ffi::{OsStr, OsString};
 use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
@@ -42,27 +44,44 @@ fn main() -> Result<(), AppError> {
   let paths = list_files_in_directory(dir_path)?;
   let paths_len = paths.len();
   let mut count = 0;
+  let mut files_transfered = HashSet::<String>::new();
   for path in paths {
     let modification_year = get_file_modification_date(&path.to_string_lossy())?;
 
     let output_dir = PathBuf::from(outputh_directory).join(format!("{}", modification_year));
     fs::create_dir_all(&output_dir)?;
 
-    let file_name = path.file_name().ok_or_else(|| {
+    let mut file_name = path.file_name().ok_or_else(|| {
       AppError::IOError(std::io::Error::new(
         std::io::ErrorKind::Other,
         "No file name",
       ))
     })?;
 
+    let file_name_str = file_name.to_string_lossy().to_string();
+
+    let new_name_with_random_id: OsString;
+
+    if !files_transfered.insert(file_name_str.clone()) {
+      let mut rng = rand::thread_rng();
+      let random_id: u32 = rng.gen();
+      new_name_with_random_id = OsString::from(format!("{}_{}", random_id, file_name_str));
+      file_name = OsStr::new(&new_name_with_random_id);
+    }
+
     let output_file = output_dir.join(file_name);
 
-    unsafe{
-      FILE_OPERATION.execute(&path.to_string_lossy(), &output_file.to_string_lossy()).unwrap();
+    unsafe {
+      FILE_OPERATION
+        .execute(&path.to_string_lossy(), &output_file.to_string_lossy())
+        .unwrap();
     }
     count += 1;
     let percent = ((count as f64 / paths_len as f64) * 100.0).round();
-    println!("{}% Concluded, File {} of {}  -  File Name: {:?}", percent, count, paths_len, file_name);
+    println!(
+      "{}% Concluded, File {} of {}  -  File Name: {:?}",
+      percent, count, paths_len, file_name
+    );
   }
 
   Ok(())
@@ -119,11 +138,11 @@ fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {
     )
     .arg(
       Arg::with_name("output")
-          .short("o")
-          .long("output")
-          .value_name("OUTPUT_DIRECTORY")
-          .help("Output directory")
-          .default_value("output"),
+        .short("o")
+        .long("output")
+        .value_name("OUTPUT_DIRECTORY")
+        .help("Output directory")
+        .default_value("output"),
     )
     .get_matches();
 

@@ -1,8 +1,5 @@
 //TODO: arg to define output directory
-//TODO: arg to define copy ou cut files
 //TODO: Create README file
-//TODO: See how made better error handling in rust
-//TODO: Separate in more folders
 //TODO: Consider whether the file is not hidden
 //TODO: Use Logging system
 use chrono::{DateTime, Datelike, Local};
@@ -40,12 +37,13 @@ static mut FILE_OPERATION: FileOperation = FileOperation::Copy;
 fn main() -> Result<(), AppError> {
   let matches = read_args()?;
   let dir_path = matches.value_of("directory").unwrap();
+  let outputh_directory = matches.value_of("output").unwrap();
 
   let paths = list_files_in_directory(dir_path)?;
   for path in paths {
     let modification_year = get_file_modification_date(&path.to_string_lossy())?;
 
-    let output_dir = PathBuf::from("output").join(format!("{}", modification_year));
+    let output_dir = PathBuf::from(outputh_directory).join(format!("{}", modification_year));
     fs::create_dir_all(&output_dir)?;
 
     let output_file = output_dir.join(path.file_name().ok_or_else(|| {
@@ -103,7 +101,7 @@ fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {
         .short("d")
         .long("directory")
         .help("Path to input directory")
-        .takes_value(true)
+        .value_name("INPUT_DIRECTORY")
         .required(true),
     )
     .arg(
@@ -111,6 +109,14 @@ fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {
         .short("x")
         .long("cut")
         .help("Cut files instead of copying"),
+    )
+    .arg(
+      Arg::with_name("output")
+          .short("o")
+          .long("output")
+          .value_name("OUTPUT_DIRECTORY")
+          .help("Output directory")
+          .default_value("output"),
     )
     .get_matches();
 

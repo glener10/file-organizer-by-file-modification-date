@@ -62,10 +62,12 @@ fn main() -> Result<(), AppError> {
     let new_name_with_random_id: OsString;
 
     if !files_transfered.insert(file_name_str.clone()) {
+      //TODO: Logging .txt with all files have same name
       let mut rng = rand::thread_rng();
       let random_id: u32 = rng.gen();
       new_name_with_random_id = OsString::from(format!("{}_{}", random_id, file_name_str));
       file_name = OsStr::new(&new_name_with_random_id);
+      files_transfered.insert(file_name.to_string_lossy().to_string());
     }
 
     let output_file = output_dir.join(file_name);

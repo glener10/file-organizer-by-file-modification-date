@@ -50,6 +50,8 @@ To run, just executing the code:
 cargo run -- -d YOUR_INPUT_DIRECTORY
 ```
 
+You can still use the **-o** flags to define an output directory and also the **-x** flag if you want to cut the input files to the output directory instead of copying them
+
 If you need help with using program, you can execute:
 
 ```bash

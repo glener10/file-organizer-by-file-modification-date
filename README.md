@@ -58,6 +58,8 @@ If you need help with using program, you can execute:
 cargo run -- --help
 ```
 
+**OBS**: The program don`t ignore hidden files! (Its can a new feature)
+
 <div id="learnmore"></div>
 
 ## 📖 **Learn More**

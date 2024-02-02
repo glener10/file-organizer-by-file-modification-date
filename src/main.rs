@@ -1,6 +1,3 @@
-//TODO: Consider whether the file is not hidden
-//TODO: Use Logging system
-//TODO: Loggin of time listing directory
 use chrono::{DateTime, Datelike, Local};
 use clap::{App, Arg, ArgMatches};
 use rand::Rng;
@@ -45,6 +42,8 @@ fn main() -> Result<(), AppError> {
   let paths_len = paths.len();
   let mut count = 0;
   let mut files_transfered = HashSet::<String>::new();
+
+  println!("Organizing Files...");
   for path in paths {
     let modification_year = get_file_modification_date(&path.to_string_lossy())?;
 
@@ -84,6 +83,7 @@ fn main() -> Result<(), AppError> {
     );
   }
 
+  println!("All Files is organized!");
   Ok(())
 }
 
@@ -98,6 +98,7 @@ fn get_file_modification_date(path: &str) -> Result<i32, AppError> {
 }
 
 fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, AppError> {
+  println!("Reading directory...");
   let mut file_paths = Vec::new();
 
   for entry in WalkDir::new(dir_path).follow_links(true) {
@@ -113,7 +114,7 @@ fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, AppError> {
       }
     }
   }
-
+  println!("Done!");
   Ok(file_paths)
 }
 

@@ -6,8 +6,7 @@
 //TODO: Consider whether the file is not hidden
 //TODO: Use Logging system
 use chrono::{DateTime, Datelike, Local};
-use clap::ArgMatches;
-use clap::{App, Arg};
+use clap::{App, Arg, ArgMatches};
 use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
@@ -94,7 +93,7 @@ fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, AppError> {
 }
 
 fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {
-  let matches = App::new("files organizer per year")
+  let matches = App::new("Files Organizer Per Year")
     .version("1.0")
     .author("Glener Pizzolato")
     .about("Organizes files by modification year")

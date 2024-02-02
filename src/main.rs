@@ -54,8 +54,9 @@ fn main() -> Result<(), AppError> {
         "No file name",
       ))
     })?);
-
-    fs::copy(&path, &output_file)?;
+    unsafe{
+      FILE_OPERATION.execute(&path.to_string_lossy(), &output_file.to_string_lossy()).unwrap();
+    }
     println!("File copied: {:?}", output_file);
   }
 

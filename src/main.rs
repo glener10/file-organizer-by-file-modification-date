@@ -102,6 +102,7 @@ fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {
         .short("d")
         .long("directory")
         .help("Path to input directory")
+        .takes_value(true)
         .required(true),
     )
     .arg(

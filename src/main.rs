@@ -1,4 +1,4 @@
-//TODO: Create README file
+//TODO: File with same name?
 //TODO: Consider whether the file is not hidden
 //TODO: Use Logging system
 use chrono::{DateTime, Datelike, Local};

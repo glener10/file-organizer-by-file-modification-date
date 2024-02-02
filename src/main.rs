@@ -1,4 +1,3 @@
-//TODO: arg to define output directory
 //TODO: Create README file
 //TODO: Consider whether the file is not hidden
 //TODO: Use Logging system
@@ -40,6 +39,8 @@ fn main() -> Result<(), AppError> {
   let outputh_directory = matches.value_of("output").unwrap();
 
   let paths = list_files_in_directory(dir_path)?;
+  let paths_len = paths.len();
+  let mut count = 0;
   for path in paths {
     let modification_year = get_file_modification_date(&path.to_string_lossy())?;
 
@@ -55,7 +56,9 @@ fn main() -> Result<(), AppError> {
     unsafe{
       FILE_OPERATION.execute(&path.to_string_lossy(), &output_file.to_string_lossy()).unwrap();
     }
-    println!("File copied: {:?}", output_file);
+    count += 1;
+    let percent = ((count as f64 / paths_len as f64) * 100.0).round();
+    println!("{}% Concluded, File {} of {}  -  File Name: {:?}", percent, count, paths_len,path.file_name());
   }
 
   Ok(())

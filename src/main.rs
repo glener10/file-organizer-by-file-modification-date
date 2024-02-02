@@ -1,6 +1,7 @@
 //TODO: File with same name?
 //TODO: Consider whether the file is not hidden
 //TODO: Use Logging system
+//TODO: Loggin of time listing directory
 use chrono::{DateTime, Datelike, Local};
 use clap::{App, Arg, ArgMatches};
 use std::fs;
@@ -47,18 +48,21 @@ fn main() -> Result<(), AppError> {
     let output_dir = PathBuf::from(outputh_directory).join(format!("{}", modification_year));
     fs::create_dir_all(&output_dir)?;
 
-    let output_file = output_dir.join(path.file_name().ok_or_else(|| {
+    let file_name = path.file_name().ok_or_else(|| {
       AppError::IOError(std::io::Error::new(
         std::io::ErrorKind::Other,
         "No file name",
       ))
-    })?);
+    })?;
+
+    let output_file = output_dir.join(file_name);
+
     unsafe{
       FILE_OPERATION.execute(&path.to_string_lossy(), &output_file.to_string_lossy()).unwrap();
     }
     count += 1;
     let percent = ((count as f64 / paths_len as f64) * 100.0).round();
-    println!("{}% Concluded, File {} of {}  -  File Name: {:?}", percent, count, paths_len,path.file_name());
+    println!("{}% Concluded, File {} of {}  -  File Name: {:?}", percent, count, paths_len, file_name);
   }
 
   Ok(())

@@ -8,7 +8,11 @@
 
 <p align="center"> 🚀 Files Organizer Per Year is a program created to organize files in a directory (can have N directories inside) according to the date it was modified, moving to folders with the year it was created/changed. </p>
 
+### **Input Directory**
+
 ![Example of disorganized input and files](documentation/inputExample.png)
+
+### **Output Directory after exec "cargo run -- -d C:\Example -o C:\Output"**
 
 ![Files organized after execution](documentation/outputExample.png)
 

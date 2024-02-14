@@ -46,18 +46,19 @@ fn main() -> Result<(), AppError> {
 
   let paths = list_files_in_directory(dir_path)?;
   let paths_len = paths.len();
+
   let mut count_files = 0;
   let mut count_files_with_same_name = 0;
+
   let mut files_transfered = HashSet::<String>::new();
   let mut files_with_repeat_name: Vec<String> = Vec::new();
-
   let mut extension_counters: Vec<ExtensionCounter> = Vec::new();
 
   println!("Organizing Files...");
   for path in paths {
     let file_extension = get_file_extension(&path.to_string_lossy())?;
-
     let mut extension_exists = false;
+
     for counter in &mut extension_counters {
       if counter.extension == file_extension {
         counter.count += 1;
@@ -65,7 +66,6 @@ fn main() -> Result<(), AppError> {
         break;
       }
     }
-
     if !extension_exists {
       let new_counter = ExtensionCounter {
         extension: file_extension.clone(),
@@ -87,7 +87,6 @@ fn main() -> Result<(), AppError> {
     })?;
 
     let file_name_str = file_name.to_string_lossy().to_string();
-
     let new_name_with_random_id: OsString;
 
     if !files_transfered.insert(file_name_str.clone()) {
@@ -160,7 +159,6 @@ fn get_file_extension(path: &str) -> Result<String, AppError> {
       return Ok(String::from(extension_str));
     }
   }
-
   Err(AppError::FileError(String::from("File has no extension")))
 }
 
@@ -219,6 +217,5 @@ fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {
       FILE_OPERATION = FileOperation::Rename;
     }
   }
-
   Ok(matches)
 }

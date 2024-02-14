@@ -41,7 +41,7 @@ fn main() -> Result<(), AppError> {
 
   let paths = list_files_in_directory(dir_path)?;
   let paths_len = paths.len();
-  let mut count = 0;
+  let mut count_files = 0;
   let mut count_files_with_same_name = 0;
   let mut files_transfered = HashSet::<String>::new();
   let mut files_with_repeat_name: Vec<String> = Vec::new();
@@ -81,13 +81,15 @@ fn main() -> Result<(), AppError> {
         .execute(&path.to_string_lossy(), &output_file.to_string_lossy())
         .unwrap();
     }
-    count += 1;
-    let percent = ((count as f64 / paths_len as f64) * 100.0).round();
+    count_files += 1;
+    let percent = ((count_files as f64 / paths_len as f64) * 100.0).round();
     println!(
       "{}% Concluded, File {} of {}  -  File Name: {:?}",
-      percent, count, paths_len, file_name
+      percent, count_files, paths_len, file_name
     );
   }
+  println!("\nFinish!\n");
+
   if count_files_with_same_name > 0 {
     let output_file_path = format!("{}/filesWithRepeatedName.txt", outputh_directory);
     let output_file = File::create(&output_file_path)?;
@@ -102,7 +104,9 @@ fn main() -> Result<(), AppError> {
     );
   }
 
-  println!("All Files is organized!");
+  if count_files > 0 {
+    println!("Total {} files organized", count_files);
+  }
   Ok(())
 }
 

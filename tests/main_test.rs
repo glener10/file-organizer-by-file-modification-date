@@ -7,6 +7,9 @@ fn clean_output_files() {
 
 #[test]
 fn test_main_with_args() {
+  if fs::metadata("./output").is_ok() {
+    clean_output_files();
+  }
   let output = Command::new("cargo")
     .arg("run")
     .arg("--")
@@ -15,10 +18,16 @@ fn test_main_with_args() {
     .output()
     .expect("Fail to execute the command of main program");
 
-  assert!(output.status.success());
   let stdout = String::from_utf8(output.stdout).expect("Saída não válida UTF-8");
-  let expected_output = "Total of 1 file with the repeated name\n\nTotal of 4 files with '.png' extension\nTotal of 1 files with '.mp4' extension\n\n\nTotal of 5 files organized\n"; // Substitua esta string pela saída esperada do seu programa
+  let expected_output = "Total of 1 file with the repeated name\n\nTotal of 4 files with '.png' extension\nTotal of 1 files with '.mp4' extension\n\n\nTotal of 5 files organized\n";
+
+  assert!(output.status.success());
   assert!(stdout.contains(expected_output));
+  assert!(fs::metadata("./output/filesWithRepeatedName.txt").is_ok());
+  assert!(fs::metadata("./output/2024/a.png").is_ok());
+  assert!(fs::metadata("./output/2024/b.png").is_ok());
+  assert!(fs::metadata("./output/2024/c.png").is_ok());
+  assert!(fs::metadata("./output/2024/d.mp4").is_ok());
 
   clean_output_files();
 }

@@ -96,7 +96,11 @@ fn main() -> Result<(), AppError> {
       let old_file_name = file_name_str.clone();
       new_name_with_random_id = OsString::from(format!("{}_{}", random_id, file_name_str));
       file_name = OsStr::new(&new_name_with_random_id);
-      let old_and_new_file_name = format!("Old File Name: {} - New File Name: {}", old_file_name, file_name.to_string_lossy().to_string());
+      let old_and_new_file_name = format!(
+        "Old File Name: {} - New File Name: {}",
+        old_file_name,
+        file_name.to_string_lossy().to_string()
+      );
       files_with_repeat_name.push(old_and_new_file_name);
       files_transfered.insert(file_name.to_string_lossy().to_string());
     }

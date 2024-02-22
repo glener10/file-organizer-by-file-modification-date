@@ -1,4 +1,4 @@
-# **Files Organizer Per Year**
+# **File organizer by file modification date**
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/glener10/files-organizer-per-year)
 ![GitHub forks](https://img.shields.io/github/forks/glener10/files-organizer-per-year)
@@ -6,7 +6,7 @@
 ![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/glener10/files-organizer-per-year)
 ![Contributors](https://img.shields.io/github/contributors/glener10/files-organizer-per-year.svg)
 
-<p align="center"> 🚀 Files Organizer Per Year is a program created to organize files in a directory (can have N directories inside) according to the date it was modified, moving to folders with the year it was created/changed. </p>
+<p align="center"> 🚀 Files Organizer by file modification date is a program created to organize files in a directory (can have N directories inside) according to the date it was modified. </p>
 
 ### **Input Directory**
 
@@ -15,6 +15,8 @@
 ### **Output Directory after exec "cargo run -- -d C:\Example -o C:\Output"**
 
 ![Files organized after execution](documentation/outputExample.png)
+
+**OBSERVATION**: Don't need to have a date in the file name!
 
 🏁 Table of Contents
 

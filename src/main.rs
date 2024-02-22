@@ -93,9 +93,11 @@ fn main() -> Result<(), AppError> {
       count_files_with_same_name += 1;
       let mut rng = rand::thread_rng();
       let random_id: u32 = rng.gen();
+      let old_file_name = file_name_str.clone();
       new_name_with_random_id = OsString::from(format!("{}_{}", random_id, file_name_str));
       file_name = OsStr::new(&new_name_with_random_id);
-      files_with_repeat_name.push(file_name.to_string_lossy().to_string());
+      let old_and_new_file_name = format!("Old File Name: {} - New File Name: {}", old_file_name, file_name.to_string_lossy().to_string());
+      files_with_repeat_name.push(old_and_new_file_name);
       files_transfered.insert(file_name.to_string_lossy().to_string());
     }
 

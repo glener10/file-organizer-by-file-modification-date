@@ -1,0 +1,25 @@
+name: main
+
+on:
+  push:
+    branches: [ 'master' ]
+  pull_request:
+    branches: [ 'master' ]
+
+jobs:
+
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        rust_version: ['1.75']
+        os: ['windows-latest']
+        
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Cargo Build    
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          # Cargo command to run (ex. `check` or `build`)
+          command: 'build'

@@ -8,12 +8,31 @@ on:
 
 jobs:
 
-  build:
+  fmt:
+    runs-on: 'windows-latest'
+    strategy:
+      matrix:
+        rust_version: ['1.75']
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust_version }}
+      
+      - name: Run Cargo Fmt
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: 'fmt'
+
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         rust_version: ['1.75']
-        os: ['windows-latest', 'macos-latest', 'ubuntu-latest']
+        os: ['windows-latest']
         
     steps:
       - uses: actions/checkout@v3
@@ -26,5 +45,4 @@ jobs:
       - name: Run Cargo Build    
         uses: actions-rs/cargo@v1.0.1
         with:
-          # Cargo command to run (ex. `check` or `build`)
-          command: 'build'
+          command: 'test'

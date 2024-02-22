@@ -24,10 +24,10 @@ fn test_main_with_args() {
   assert!(output.status.success());
   assert!(stdout.contains(expected_output));
   assert!(fs::metadata("./output/filesWithRepeatedName.txt").is_ok());
-  assert!(fs::metadata("./output/2024/a.png").is_ok());
-  assert!(fs::metadata("./output/2024/b.png").is_ok());
-  assert!(fs::metadata("./output/2024/c.png").is_ok());
-  assert!(fs::metadata("./output/2024/d.mp4").is_ok());
+  assert!(fs::metadata("./output/2024/pictureFrom2024.png").is_ok());
+  assert!(fs::metadata("./output/2024/pictureFrom2024-2.png").is_ok());
+  assert!(fs::metadata("./output/2024/pictureFrom2024-3.png").is_ok());
+  assert!(fs::metadata("./output/2024/movieFrom2024.mp4").is_ok());
 
   clean_output_files();
 }

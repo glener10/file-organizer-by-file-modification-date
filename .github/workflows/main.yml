@@ -17,7 +17,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: "1.75"
-          #components: clippy
+          components: clippy
 
       - name: Run Cargo Fmt Check
         uses: actions-rs/cargo@v1.0.1
@@ -30,10 +30,10 @@ jobs:
         with:
           command: check
 
-      #- name: Run Cargo Clippy
-      #  uses: actions-rs/cargo@v1.0.1
-      #  with:
-      #    command: clippy
+      - name: Run Cargo Clippy
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: clippy
 
   build:
     name: Build

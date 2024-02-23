@@ -16,7 +16,7 @@ pub fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, AppError>
       }
       Err(err) => {
         let error_message = format!("An error occurred while reading the directory: {}", err);
-        return Err(AppError::ReadDirectoryError(error_message));
+        return Err(AppError::ReadDirectory(error_message));
       }
     }
   }

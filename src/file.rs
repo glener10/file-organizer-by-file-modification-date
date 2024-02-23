@@ -12,7 +12,7 @@ pub fn get_file_extension(path: &str) -> Result<String, AppError> {
       return Ok(String::from(extension_str));
     }
   }
-  Err(AppError::FileError(String::from("File has no extension")))
+  Err(AppError::File(String::from("File has no extension")))
 }
 
 pub fn get_file_modification_date(path: &str) -> Result<i32, AppError> {

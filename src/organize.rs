@@ -52,7 +52,7 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
     fs::create_dir_all(&output_dir)?;
 
     let mut file_name = path.file_name().ok_or_else(|| {
-      AppError::IOError(std::io::Error::new(
+      AppError::IO(std::io::Error::new(
         std::io::ErrorKind::Other,
         "No file name",
       ))

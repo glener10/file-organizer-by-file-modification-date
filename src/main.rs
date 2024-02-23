@@ -5,6 +5,7 @@ mod errors;
 mod file;
 mod operation;
 mod organize;
+mod organize_logs;
 
 use crate::operation::{FileOperation, FILE_OPERATION};
 use crate::organize::organize_files;

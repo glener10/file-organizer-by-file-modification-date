@@ -9,6 +9,7 @@ use crate::directory::list_files_in_directory;
 use crate::errors::AppError;
 use crate::file::{get_file_extension, get_file_modification_date};
 use crate::operation::FILE_OPERATION;
+use crate::organize_logs::print_executing_log;
 
 struct ExtensionCounter {
   extension: String,
@@ -85,11 +86,7 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
         .unwrap();
     }
     count_files += 1;
-    let percent = ((count_files as f64 / paths_len as f64) * 100.0).round();
-    println!(
-      "{}% Concluded, File {} of {}  -  File Name: {:?}",
-      percent, count_files, paths_len, file_name
-    );
+    print_executing_log(count_files, paths_len, file_name);
   }
   println!("\nFinish!\n");
 

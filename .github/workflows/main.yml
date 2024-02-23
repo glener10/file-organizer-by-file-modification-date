@@ -63,7 +63,7 @@ jobs:
           - stable
           - beta
           - nightly
-        os: ["windows-latest", "ubuntu-latest"]
+        os: ["windows-latest", "ubuntu-latest", "macos-latest"]
 
     steps:
       - uses: actions/checkout@v3

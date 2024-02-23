@@ -13,9 +13,18 @@ fn main() -> Result<(), AppError> {
   let dir_path = matches.value_of("directory").unwrap();
   let outputh_directory = matches.value_of("output").unwrap();
 
-  organize_files(dir_path, outputh_directory);
+  let return_usecasse = organize_files(dir_path, outputh_directory);
 
-  Ok(())
+  match return_usecasse {
+    Ok(entry) => Ok(entry),
+    Err(err) => {
+      let error_message = format!(
+        "An error occurred when the main usecase executes: {:?}",
+        err
+      );
+      return Err(AppError::UseCaseError(error_message));
+    }
+  }
 }
 
 fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {

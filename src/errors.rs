@@ -3,6 +3,7 @@ use std::io;
 #[derive(Debug)]
 pub enum AppError {
   ReadDirectoryError(String),
+  UseCaseError(String),
   FileError(String),
   IOError(io::Error),
 }

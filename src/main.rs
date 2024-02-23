@@ -1,19 +1,18 @@
-use chrono::{DateTime, Datelike, Local};
 use clap::{App, Arg, ArgMatches};
 use rand::Rng;
 use std::collections::HashSet;
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::Write;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 mod errors;
 use errors::AppError;
 
-mod useCases;
-use useCases::directory::list_files_in_directory;
-use useCases::file::get_file_extension;
-use useCases::file::get_file_modification_date;
+mod usecases;
+use usecases::directory::list_files_in_directory;
+use usecases::file::get_file_extension;
+use usecases::file::get_file_modification_date;
 //use useCases::organize_files::organize_files_use_case;
 
 #[derive(Debug)]

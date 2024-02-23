@@ -18,7 +18,7 @@ jobs:
           toolchain: "1.75"
 
       - name: Run Cargo Fmt Check
-        uses: actions-rs/cargo@v1
+        uses: actions-rs/cargo@v1.0.1
         with:
           command: fmt
           args: --check

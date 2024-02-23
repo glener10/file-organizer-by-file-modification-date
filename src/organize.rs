@@ -9,11 +9,11 @@ use crate::directory::list_files_in_directory;
 use crate::errors::AppError;
 use crate::file::{get_file_extension, get_file_modification_date};
 use crate::operation::FILE_OPERATION;
-use crate::organize_logs::print_executing_log;
+use crate::organize_logs::{print_executing_log, print_finish_total_log};
 
-struct ExtensionCounter {
-  extension: String,
-  count: usize,
+pub struct ExtensionCounter {
+  pub extension: String,
+  pub count: usize,
 }
 
 pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppError> {
@@ -88,23 +88,15 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
     count_files += 1;
     print_executing_log(count_files, paths_len, file_name);
   }
-  println!("\nFinish!\n");
 
+  println!("\nFinish!\n");
   create_repeated_name_log_file(
     count_files_with_same_name,
     files_with_repeat_name,
     output_directory,
   );
+  print_finish_total_log(count_files, &extension_counters);
 
-  if count_files > 0 {
-    for counter in &extension_counters {
-      println!(
-        "Total of {} files with '.{}' extension",
-        counter.count, counter.extension
-      );
-    }
-    println!("\n\nTotal of {} files organized", count_files);
-  }
   Ok(())
 }
 

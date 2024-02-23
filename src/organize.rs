@@ -29,9 +29,9 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
 
   println!("Organizing Files...");
   for path in paths {
+    //Computing Extension
     let file_extension = get_file_extension(&path.to_string_lossy())?;
     let mut extension_exists = false;
-
     for counter in &mut extension_counters {
       if counter.extension == file_extension {
         counter.count += 1;
@@ -47,10 +47,16 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
       extension_counters.push(new_counter);
     }
 
-    let modification_year = get_file_modification_date(&path.to_string_lossy())?;
-
-    let output_dir = PathBuf::from(output_directory).join(format!("{}", modification_year));
-    fs::create_dir_all(&output_dir)?;
+    let path_to_create_year_foder = path.clone();
+    let output_dir =
+      match create_year_folder_if_doesnt_exist(path_to_create_year_foder, output_directory) {
+        Ok(resultado) => resultado,
+        Err(err) => {
+          let message = format!("Error: {:?}", err);
+          println!("{}", message);
+          return Err(AppError::OrganizeFiles(message));
+        }
+      };
 
     let mut file_name = path.file_name().ok_or_else(|| {
       AppError::IO(std::io::Error::new(
@@ -59,16 +65,16 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
       ))
     })?;
 
+    //Define if file_name is the only file or needs putting a random_id
     let file_name_str = file_name.to_string_lossy().to_string();
     let new_name_with_random_id: OsString;
-
     if !files_transfered.insert(file_name_str.clone()) {
       count_files_with_same_name += 1;
       let mut rng = rand::thread_rng();
       let random_id: u32 = rng.gen();
       let old_file_name = file_name_str.clone();
       new_name_with_random_id = OsString::from(format!("{}_{}", random_id, file_name_str));
-      file_name = OsStr::new(&new_name_with_random_id);
+      file_name = &OsStr::new(&new_name_with_random_id);
       let old_and_new_file_name = format!(
         "Old File Name: {} - New File Name: {}",
         old_file_name,
@@ -80,6 +86,7 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
 
     let output_file = output_dir.join(file_name);
 
+    //Execute Copy or Cut
     unsafe {
       FILE_OPERATION
         .execute(&path.to_string_lossy(), &output_file.to_string_lossy())
@@ -98,6 +105,21 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
   print_finish_total_log(count_files, &extension_counters);
 
   Ok(())
+}
+
+fn create_year_folder_if_doesnt_exist(
+  path: PathBuf,
+  output_directory: &str,
+) -> Result<PathBuf, AppError> {
+  let modification_year = get_file_modification_date(&path.to_string_lossy());
+  let output_dir = PathBuf::from(output_directory).join(format!("{:?}", modification_year));
+  let create_dir_all = fs::create_dir_all(&output_dir);
+  create_dir_all.map(|_| output_dir).map_err(|_| {
+    AppError::File(format!(
+      "An error occurred trying to create the folder with year {:?}",
+      modification_year
+    ))
+  })
 }
 
 fn create_repeated_name_log_file(

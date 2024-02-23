@@ -6,10 +6,15 @@ use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use walkdir::WalkDir;
 
 mod errors;
 use errors::AppError;
+
+mod useCases;
+use useCases::directory::list_files_in_directory;
+use useCases::file::get_file_extension;
+use useCases::file::get_file_modification_date;
+//use useCases::organize_files::organize_files_use_case;
 
 #[derive(Debug)]
 pub enum FileOperation {
@@ -145,48 +150,6 @@ fn main() -> Result<(), AppError> {
     println!("\n\nTotal of {} files organized", count_files);
   }
   Ok(())
-}
-
-fn get_file_modification_date(path: &str) -> Result<i32, AppError> {
-  let path = Path::new(path);
-
-  let modification_date_in_system_time = fs::metadata(path)?.modified()?;
-  let modification_date = DateTime::<Local>::from(modification_date_in_system_time);
-
-  let year = modification_date.year();
-  Ok(year)
-}
-
-fn get_file_extension(path: &str) -> Result<String, AppError> {
-  let path = Path::new(path);
-
-  if let Some(extension) = path.extension() {
-    if let Some(extension_str) = extension.to_str() {
-      return Ok(String::from(extension_str));
-    }
-  }
-  Err(AppError::FileError(String::from("File has no extension")))
-}
-
-fn list_files_in_directory(dir_path: &str) -> Result<Vec<PathBuf>, AppError> {
-  println!("Reading directory...");
-  let mut file_paths = Vec::new();
-
-  for entry in WalkDir::new(dir_path).follow_links(true) {
-    match entry {
-      Ok(entry) => {
-        if entry.file_type().is_file() {
-          file_paths.push(entry.path().to_path_buf());
-        }
-      }
-      Err(err) => {
-        let error_message = format!("An error occurred while reading the directory: {}", err);
-        return Err(AppError::ReadDirectoryError(error_message));
-      }
-    }
-  }
-  println!("Done!");
-  Ok(file_paths)
 }
 
 fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {

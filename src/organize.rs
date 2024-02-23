@@ -29,9 +29,9 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
 
   println!("Organizing Files...");
   for path in paths {
+    //Increase or create (if first) the total number of files with extension X
     let file_extension = get_file_extension(&path.to_string_lossy())?;
     let mut extension_exists = false;
-
     for counter in &mut extension_counters {
       if counter.extension == file_extension {
         counter.count += 1;
@@ -47,22 +47,24 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
       extension_counters.push(new_counter);
     }
 
+    //Create year folder if it doesn't already exist
     let modification_year = get_file_modification_date(&path.to_string_lossy())?;
-
     let output_dir = PathBuf::from(output_directory).join(format!("{}", modification_year));
     fs::create_dir_all(&output_dir)?;
 
+    //Get the file name with the path
     let mut file_name = path.file_name().ok_or_else(|| {
       AppError::IO(std::io::Error::new(
         std::io::ErrorKind::Other,
         "No file name",
       ))
     })?;
-
     let file_name_str = file_name.to_string_lossy().to_string();
+    
+    //Checks if a file with the same name has already been copied/cut
     let new_name_with_random_id: OsString;
-
     if !files_transfered.insert(file_name_str.clone()) {
+      //Treatments if a file with the same name already exists
       count_files_with_same_name += 1;
       let mut rng = rand::thread_rng();
       let random_id: u32 = rng.gen();
@@ -78,13 +80,15 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
       files_transfered.insert(file_name.to_string_lossy().to_string());
     }
 
+    //Defines the path and final name of the file
     let output_file = output_dir.join(file_name);
-
+    //Copy or cut the file
     unsafe {
       FILE_OPERATION
         .execute(&path.to_string_lossy(), &output_file.to_string_lossy())
         .unwrap();
     }
+
     count_files += 1;
     print_executing_log(count_files, paths_len, file_name);
   }

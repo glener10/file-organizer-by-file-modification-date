@@ -60,7 +60,7 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
       ))
     })?;
     let file_name_str = file_name.to_string_lossy().to_string();
-    
+
     //Checks if a file with the same name has already been copied/cut
     let new_name_with_random_id: OsString;
     if !files_transfered.insert(file_name_str.clone()) {

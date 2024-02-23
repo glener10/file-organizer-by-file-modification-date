@@ -5,10 +5,10 @@ use std::fs::{self, File};
 use std::io::Write;
 use std::path::PathBuf;
 
-use crate::errors::AppError;
-use crate::operation::FILE_OPERATION;
 use crate::directory::list_files_in_directory;
+use crate::errors::AppError;
 use crate::file::{get_file_extension, get_file_modification_date};
+use crate::operation::FILE_OPERATION;
 
 struct ExtensionCounter {
   extension: String,

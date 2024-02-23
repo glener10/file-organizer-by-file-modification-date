@@ -1,68 +1,76 @@
-name: Rust
+name: main
 
 on:
   push:
-    branches:
-      - master
+    branches: ["master"]
   pull_request:
-    branches:
-      - master
+    branches: ["master"]
 
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-latest"
     steps:
-      - name: Setup | Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Setup | Rust
-        uses: ATiltedTree/setup-rust@v1
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
-          rust-version: stable
+          toolchain: "1.75"
           components: clippy
 
-      - name: Check
-        run: cargo check
+      - name: Run Cargo Fmt Check
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: fmt
+          args: --check
 
-      - name: Lint
-        run: cargo clippy
+      - name: Run Cargo Check
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: check
+
+      - name: Run Cargo Clippy
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: clippy
 
   build:
     name: Build
+    runs-on: "ubuntu-latest"
     needs: [lint]
-    runs-on: ubuntu-latest
     steps:
       - name: Setup | Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Setup | Rust
-        uses: ATiltedTree/setup-rust@v1
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
-          rust-version: stable
-      - name: Build
-        run: cargo build
+          toolchain: stable
+
+      - name: Run Cargo Build
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: build
 
   test:
     name: Test
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macOS-latest
-        rust:
-          - stable
-          - beta
-          - nightly
     runs-on: ${{ matrix.os }}
     needs: [build]
+    strategy:
+      matrix:
+        rust_version: ["1.75", "1.76"]
+        os: ["windows-latest", "ubuntu-latest"]
+
     steps:
-      - name: Setup | Checkout
-        uses: actions/checkout@v2
-      - name: Setup | Rust
-        uses: ATiltedTree/setup-rust@v1
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
         with:
-          rust-version: ${{ matrix.rust }}
-      - name: Testing
-        run: cargo test
+          toolchain: ${{ matrix.rust_version }}
+
+      - name: Run Cargo Test
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: test

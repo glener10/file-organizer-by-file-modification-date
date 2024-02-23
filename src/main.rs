@@ -1,12 +1,14 @@
 use clap::{App, Arg, ArgMatches};
 
 mod errors;
-use errors::AppError;
+mod operation;
+mod organize;
+mod directory;
+mod file;
 
-mod usecases;
-use usecases::operation::FileOperation;
-use usecases::operation::FILE_OPERATION;
-use usecases::organize::organize_files;
+use errors::AppError;
+use crate::operation::{FileOperation, FILE_OPERATION};
+use crate::organize::organize_files;
 
 fn main() -> Result<(), AppError> {
   let matches = read_args()?;

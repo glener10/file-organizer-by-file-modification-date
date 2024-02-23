@@ -4,7 +4,6 @@ use std::io;
 pub enum AppError {
   ReadDirectory(String),
   File(String),
-  OrganizeFiles(String),
   IO(io::Error),
 }
 

@@ -83,8 +83,6 @@ fn main() -> Result<(), AppError> {
       AppError::IOError(std::io::Error::new(
         std::io::ErrorKind::Other,
         "No file name",
-
-        
       ))
     })?;
 

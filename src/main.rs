@@ -64,6 +64,8 @@ fn main() -> Result<(), AppError> {
         counter.count += 1;
         extension_exists = true;
         break;
+
+        
       }
     }
     if !extension_exists {

@@ -9,7 +9,6 @@ on:
 jobs:
   fmt:
     runs-on: "ubuntu-latest"
-
     steps:
       - uses: actions/checkout@v3
 
@@ -18,8 +17,8 @@ jobs:
         with:
           toolchain: "1.75"
 
-      - name: Run Cargo Fmt
-        uses: actions-rs/cargo@v1.0.1
+      - name: Run Cargo Fmt Check
+        uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --check

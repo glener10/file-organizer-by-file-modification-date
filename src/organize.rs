@@ -90,19 +90,11 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
   }
   println!("\nFinish!\n");
 
-  if count_files_with_same_name > 0 {
-    let output_file_path = format!("{}/filesWithRepeatedName.txt", output_directory);
-    let output_file = File::create(output_file_path)?;
-
-    for result in &files_with_repeat_name {
-      writeln!(&output_file, "{}", result)?;
-    }
-
-    println!(
-      "Total of {} file with the repeated name\n",
-      count_files_with_same_name
-    );
-  }
+  create_repeated_name_log_file(
+    count_files_with_same_name,
+    files_with_repeat_name,
+    output_directory,
+  );
 
   if count_files > 0 {
     for counter in &extension_counters {
@@ -114,4 +106,39 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
     println!("\n\nTotal of {} files organized", count_files);
   }
   Ok(())
+}
+
+fn create_repeated_name_log_file(
+  count_files_with_same_name: i32,
+  files_with_repeat_name: Vec<String>,
+  output_directory: &str,
+) {
+  if count_files_with_same_name > 0 {
+    let output_file_path = format!("{}/filesWithRepeatedName.txt", output_directory);
+    let output_file = File::create(&output_file_path);
+
+    match output_file {
+      Ok(output_file) => {
+        for result in &files_with_repeat_name {
+          let write_in_file = writeln!(&output_file, "{}", result);
+          if write_in_file.is_err() {
+            println!(
+              "An error occurred when trying to write the result to the file '{}': {}",
+              output_file_path, result
+            );
+          }
+        }
+        println!(
+          "Total of {} file with the repeated name\n",
+          count_files_with_same_name
+        );
+      }
+      Err(err) => {
+        println!(
+          "An error occurred when trying to create the file: '{}'. Error: {}",
+          output_directory, err
+        );
+      }
+    }
+  }
 }

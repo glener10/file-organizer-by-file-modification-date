@@ -13,7 +13,7 @@ fn main() -> Result<(), AppError> {
   let dir_path = matches.value_of("directory").unwrap();
   let outputh_directory = matches.value_of("output").unwrap();
 
-  return organize_files(dir_path, outputh_directory);
+  organize_files(dir_path, outputh_directory)
 }
 
 fn read_args<'a>() -> Result<ArgMatches<'a>, AppError> {

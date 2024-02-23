@@ -73,7 +73,7 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
       let old_and_new_file_name = format!(
         "Old File Name: {} - New File Name: {}",
         old_file_name,
-        file_name.to_string_lossy().to_string()
+        file_name.to_string_lossy()
       );
       files_with_repeat_name.push(old_and_new_file_name);
       files_transfered.insert(file_name.to_string_lossy().to_string());
@@ -97,7 +97,7 @@ pub fn organize_files(dir_path: &str, output_directory: &str) -> Result<(), AppE
 
   if count_files_with_same_name > 0 {
     let output_file_path = format!("{}/filesWithRepeatedName.txt", output_directory);
-    let output_file = File::create(&output_file_path)?;
+    let output_file = File::create(output_file_path)?;
 
     for result in &files_with_repeat_name {
       writeln!(&output_file, "{}", result)?;
